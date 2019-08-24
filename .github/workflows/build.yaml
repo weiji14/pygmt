@@ -1,0 +1,73 @@
+on:
+  push:
+    - branches:
+      - master
+    - tags:
+      - '*'
+  pull_request:
+    - branches:
+      - master
+
+name: PyGMT Tests
+
+jobs:
+  build:
+    name: ${{ matrix.os }} - Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 4
+      matrix:
+        os: [windows-2016]
+        python-version: [3.6, 3.7]
+
+    steps:
+    # Checkout current git repository
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    # Install ghostscript separately since there is no Windows conda-forge package for it.
+    - name: Install ghostscript via chocolatey
+      run: |
+        set -x -e
+        choco install ghostscript
+      if: matrix.os == 'windows-2016'
+
+    # Add conda to system path
+    - name: Add conda to PATH
+      run: bash export PATH=$CONDA/bin:$PATH
+
+    # Get the Fatiando CI scripts
+    - name: Fetch the Fatiando CI scripts
+      run: git clone --branch=1.1.1 --depth=1 https://github.com/fatiando/continuous-integration.git
+
+    # Setup dependencies and build a conda environment
+    - name: Setup Miniconda
+      run: continuous-integration/azure/setup-miniconda.bat
+      env:
+        PYTHON: ${{ matrix.python-version }}
+        CONDA_REQUIREMENTS: requirements.txt
+        CONDA_REQUIREMENTS_DEV: requirements-dev.txt
+        CONDA_INSTALL_EXTRA: "codecov"
+        CONDA_EXTRA_CHANNEL: "conda-forge/label/dev"
+
+    # Show installed pkg information for postmortem diagnostic
+    - name: List installed packages
+      run: |
+        set -x -e
+        source activate testing
+        conda list
+
+    # Install the package that we want to test
+    - name: Install the package
+      run: |
+        set -x -e
+        source activate testing
+        python setup.py sdist --formats=zip
+        pip install dist/*
+
+    # Run the tests
+    - name: Test
+      run: |
+        set -x -e
+        source activate testing
+        make test PYTEST_EXTRA="-r P"
