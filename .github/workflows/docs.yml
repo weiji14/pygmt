@@ -1,0 +1,33 @@
+name: Continuous Documentation
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout current git repository
+      uses: actions/checkout@v1
+
+    - name: Include $CONDA in $PATH
+      run: echo ::add-path::$CONDA/bin
+
+    - name: Install conda packages and pygmt
+      run: |
+        conda env create -f environment.yml
+        source activate pygmt
+        conda install -c conda-forge -c conda-forge/label/dev gmt==6.0.0rc4
+        make install
+
+    - name: Build documentation pages
+      run: |
+        source activate pygmt
+        cd doc
+        make all
+
+    - name: Deploy website to Zeit Now
+      run: now --name pygmt --token $NOW_TOKEN doc/_build/html
+      env:
+        NOW_TOKEN: ${{ secrets.NOW_TOKEN }}
