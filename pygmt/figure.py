@@ -83,9 +83,9 @@ class Figure(BasePlotting):
         :meth:`pygmt.Figure.savefig` or :meth:`pygmt.Figure.psconvert` must be
         made in order to get a file.
         """
-        # Passing format '-' tells pygmt.end to not produce any files.
-        fmt = "-"
         with Session() as lib:
+            # Passing format '-' tells pygmt.end to not produce any files.
+            fmt = "-"
             lib.call_module("figure", "{} {}".format(self._name, fmt))
 
     def _preprocess(self, **kwargs):
@@ -362,8 +362,7 @@ class Figure(BasePlotting):
         Show a PNG preview if the object is returned in an interactive shell.
         For the Jupyter notebook or IPython Qt console.
         """
-        png = self._preview(fmt="png", dpi=70, anti_alias=True, as_bytes=True)
-        return png
+        return self._preview(fmt="png", dpi=70, anti_alias=True, as_bytes=True)
 
     def _repr_html_(self):
         """

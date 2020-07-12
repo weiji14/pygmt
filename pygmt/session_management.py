@@ -12,8 +12,8 @@ def begin():
 
     Only meant to be used once for creating the global session.
     """
-    prefix = "pygmt-session"
     with Session() as lib:
+        prefix = "pygmt-session"
         lib.call_module("begin", prefix)
         # pygmt relies on GMT modern mode with GMT_COMPATIBILITY at version 6
         lib.call_module("set", "GMT_COMPATIBILITY 6")

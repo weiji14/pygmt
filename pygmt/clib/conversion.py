@@ -104,7 +104,7 @@ def dataarray_to_matrix(grid):
         region.extend([coord.min(), coord.max()])
         inc.append(coord_inc)
 
-    if any([i < 0 for i in inc]):  # Sort grid when there are negative increments
+    if any(i < 0 for i in inc):  # Sort grid when there are negative increments
         inc = [abs(i) for i in inc]
         grid = grid.sortby(variables=list(grid.dims), ascending=True)
 
@@ -155,8 +155,7 @@ def vectors_to_arrays(vectors):
     True
 
     """
-    arrays = [as_c_contiguous(np.asarray(i)) for i in vectors]
-    return arrays
+    return [as_c_contiguous(np.asarray(i)) for i in vectors]
 
 
 def as_c_contiguous(array):

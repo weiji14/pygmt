@@ -37,7 +37,7 @@ def test_contour_fail_no_data(data):
     # is not given:
     for variable in product([None, data[:, 0]], repeat=3):
         # Filter one valid configuration:
-        if not any(item is None for item in variable):
+        if all(item is not None for item in variable):
             continue
         with pytest.raises(GMTInvalidInput):
             fig.contour(

@@ -605,10 +605,7 @@ class Session:
         """
         pad = kwargs.get("pad", None)
         if pad is None:
-            if "MATRIX" in family:
-                pad = 0
-            else:
-                pad = self["GMT_PAD_DEFAULT"]
+            pad = 0 if "MATRIX" in family else self["GMT_PAD_DEFAULT"]
         return pad
 
     def _parse_constant(self, constant, valid, valid_modifiers=None):
@@ -666,8 +663,7 @@ class Session:
                     parts[1], str(valid_modifiers)
                 )
             )
-        integer_value = sum(self[part] for part in parts)
-        return integer_value
+        return sum(self[part] for part in parts)
 
     def _check_dtype_and_dim(self, array, ndim):
         """
@@ -1071,7 +1067,7 @@ class Session:
 
         columns = len(arrays)
         rows = len(arrays[0])
-        if not all(len(i) == rows for i in arrays):
+        if any(len(i) != rows for i in arrays):
             raise GMTInvalidInput("All arrays must have same size.")
 
         family = "GMT_IS_DATASET|GMT_VIA_VECTOR"

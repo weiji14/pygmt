@@ -55,10 +55,9 @@ def load_ocean_ridge_points():
         The data table. Columns are longitude and latitude.
     """
     fname = which("@ridge.txt", download="c")
-    data = pd.read_csv(
+    return pd.read_csv(
         fname, sep=r"\s+", names=["longitude", "latitude"], skiprows=1, comment=">"
     )
-    return data
 
 
 def load_sample_bathymetry():
@@ -78,10 +77,9 @@ def load_sample_bathymetry():
         The data table. Columns are longitude, latitude, and bathymetry.
     """
     fname = which("@tut_ship.xyz", download="c")
-    data = pd.read_csv(
+    return pd.read_csv(
         fname, sep="\t", header=None, names=["longitude", "latitude", "bathymetry"]
     )
-    return data
 
 
 def load_usgs_quakes():
@@ -102,5 +100,4 @@ def load_usgs_quakes():
 
     """
     fname = which("@usgs_quakes_22.txt", download="c")
-    data = pd.read_csv(fname)
-    return data
+    return pd.read_csv(fname)

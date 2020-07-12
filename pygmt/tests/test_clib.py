@@ -129,8 +129,8 @@ def test_destroy_session_fails():
 def test_call_module():
     "Run a command to see if call_module works"
     data_fname = os.path.join(TEST_DATA_DIR, "points.txt")
-    out_fname = "test_call_module.txt"
     with clib.Session() as lib:
+        out_fname = "test_call_module.txt"
         with GMTTempFile() as out_fname:
             lib.call_module("info", "{} -C ->{}".format(data_fname, out_fname.name))
             assert os.path.exists(out_fname.name)
@@ -321,10 +321,10 @@ def test_put_vector():
             lib.put_vector(dataset, column=lib["GMT_X"], vector=x)
             lib.put_vector(dataset, column=lib["GMT_Y"], vector=y)
             lib.put_vector(dataset, column=lib["GMT_Z"], vector=z)
-            # Turns out wesn doesn't matter for Datasets
-            wesn = [0] * 6
             # Save the data to a file to see if it's being accessed correctly
             with GMTTempFile() as tmp_file:
+                # Turns out wesn doesn't matter for Datasets
+                wesn = [0] * 6
                 lib.write_data(
                     "GMT_IS_VECTOR",
                     "GMT_IS_POINT",
@@ -396,10 +396,10 @@ def test_put_matrix():
             )
             data = np.arange(shape[0] * shape[1], dtype=dtype).reshape(shape)
             lib.put_matrix(dataset, matrix=data)
-            # wesn doesn't matter for Datasets
-            wesn = [0] * 6
             # Save the data to a file to see if it's being accessed correctly
             with GMTTempFile() as tmp_file:
+                # wesn doesn't matter for Datasets
+                wesn = [0] * 6
                 lib.write_data(
                     "GMT_IS_MATRIX",
                     "GMT_IS_POINT",
@@ -521,13 +521,13 @@ def test_virtual_file_fails():
 def test_virtual_file_bad_direction():
     "Test passing an invalid direction argument"
     with clib.Session() as lib:
-        vfargs = (
-            "GMT_IS_DATASET|GMT_VIA_MATRIX",
-            "GMT_IS_POINT",
-            "GMT_IS_GRID",  # The invalid direction argument
-            0,
-        )
         with pytest.raises(GMTInvalidInput):
+            vfargs = (
+                "GMT_IS_DATASET|GMT_VIA_MATRIX",
+                "GMT_IS_POINT",
+                "GMT_IS_GRID",  # The invalid direction argument
+                0,
+            )
             with lib.open_virtual_file(*vfargs):
                 print("This should have failed")
 
@@ -648,11 +648,11 @@ def test_virtualfile_from_vectors_pandas():
 
 def test_virtualfile_from_vectors_arraylike():
     "Pass array-like vectors to a dataset"
-    size = 13
-    x = list(range(0, size, 1))
-    y = tuple(range(size, size * 2, 1))
-    z = range(size * 2, size * 3, 1)
     with clib.Session() as lib:
+        size = 13
+        x = list(range(0, size, 1))
+        y = tuple(range(size, size * 2, 1))
+        z = range(size * 2, size * 3, 1)
         with lib.virtualfile_from_vectors(x, y, z) as vfile:
             with GMTTempFile() as outfile:
                 lib.call_module("info", "{} ->{}".format(vfile, outfile.name))
@@ -834,12 +834,9 @@ def test_fails_for_wrong_version():
     "Make sure the clib.Session raises an exception if GMT is too old"
 
     # Mock GMT_Get_Default to return an old version
-    def mock_defaults(api, name, value):  # pylint: disable=unused-argument
+    def mock_defaults(api, name, value):    # pylint: disable=unused-argument
         "Return an old version"
-        if name == b"API_VERSION":
-            value.value = b"5.4.3"
-        else:
-            value.value = b"bla"
+        value.value = b"5.4.3" if name == b"API_VERSION" else b"bla"
         return 0
 
     lib = clib.Session()

@@ -78,7 +78,10 @@ def test_legend_specfile():
     Test specfile functionality.
     """
 
-    specfile_contents = """
+    with GMTTempFile() as specfile:
+
+        with open(specfile.name, "w") as file:
+            specfile_contents = """
 G -0.1i
 H 24 Times-Roman My Map Legend
 D 0.2i 1p
@@ -105,9 +108,6 @@ T There is no easy way to predetermine how many lines will be required,
 T so we may have to adjust the box height to get the right size box.
 """
 
-    with GMTTempFile() as specfile:
-
-        with open(specfile.name, "w") as file:
             file.write(specfile_contents)
 
         fig = Figure()
