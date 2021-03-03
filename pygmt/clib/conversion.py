@@ -158,8 +158,7 @@ def vectors_to_arrays(vectors):
     >>> all(isinstance(i, np.ndarray) for i in vectors_to_arrays(data))
     True
     """
-    arrays = [as_c_contiguous(np.asarray(i)) for i in vectors]
-    return arrays
+    return [as_c_contiguous(np.asarray(i)) for i in vectors]
 
 
 def as_c_contiguous(array):

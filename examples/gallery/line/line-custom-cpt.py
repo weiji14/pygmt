@@ -12,6 +12,7 @@ color.
 
 """
 
+
 import numpy as np
 import pygmt
 
@@ -25,7 +26,7 @@ fig.basemap(frame=["WSne", "af"], region=[20, 30, -10, 10])
 pygmt.makecpt(cmap="batlow", series=[0, 10, 1])
 
 # Plot 10 lines and set a different z-value for each line
-for zvalue in range(0, 10):
+for zvalue in range(10):
     y = zvalue * np.sin(x)
     fig.plot(x=x, y=y, cmap=True, zvalue=zvalue, pen="thick,+z,-")
 # Color bar to show the custom CPT and the associated z-values

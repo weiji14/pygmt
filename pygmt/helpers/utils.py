@@ -64,14 +64,13 @@ def data_kind(data, x=None, y=None, z=None):
         raise GMTInvalidInput("Must provided both x and y.")
 
     if isinstance(data, str):
-        kind = "file"
+        return "file"
     elif isinstance(data, xr.DataArray):
-        kind = "grid"
+        return "grid"
     elif data is not None:
-        kind = "matrix"
+        return "matrix"
     else:
-        kind = "vectors"
-    return kind
+        return "vectors"
 
 
 @contextmanager
@@ -154,8 +153,7 @@ def build_arg_string(kwargs):
         else:
             sorted_args.append("-{}{}".format(key, kwargs[key]))
 
-    arg_str = " ".join(sorted_args)
-    return arg_str
+    return " ".join(sorted_args)
 
 
 def is_nonstr_iter(value):

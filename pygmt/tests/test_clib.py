@@ -356,8 +356,10 @@ def test_virtual_file():
                     lib.call_module("info", "{} ->{}".format(vfile, outfile.name))
                     output = outfile.read(keep_tabs=True)
             bounds = "\t".join(
-                ["<{:.0f}/{:.0f}>".format(col.min(), col.max()) for col in data.T]
+                "<{:.0f}/{:.0f}>".format(col.min(), col.max())
+                for col in data.T
             )
+
             expected = "<matrix memory>: N = {}\t{}\n".format(shape[0], bounds)
             assert output == expected
 
@@ -399,13 +401,13 @@ def test_virtual_file_bad_direction():
     Test passing an invalid direction argument.
     """
     with clib.Session() as lib:
-        vfargs = (
-            "GMT_IS_DATASET|GMT_VIA_MATRIX",
-            "GMT_IS_POINT",
-            "GMT_IS_GRID",  # The invalid direction argument
-            0,
-        )
         with pytest.raises(GMTInvalidInput):
+            vfargs = (
+                "GMT_IS_DATASET|GMT_VIA_MATRIX",
+                "GMT_IS_POINT",
+                "GMT_IS_GRID",  # The invalid direction argument
+                0,
+            )
             with lib.open_virtual_file(*vfargs):
                 print("This should have failed")
 
@@ -426,8 +428,9 @@ def test_virtualfile_from_vectors():
                     lib.call_module("info", "{} ->{}".format(vfile, outfile.name))
                     output = outfile.read(keep_tabs=True)
             bounds = "\t".join(
-                ["<{:.0f}/{:.0f}>".format(i.min(), i.max()) for i in (x, y, z)]
+                "<{:.0f}/{:.0f}>".format(i.min(), i.max()) for i in (x, y, z)
             )
+
             expected = "<vector memory>: N = {}\t{}\n".format(size, bounds)
             assert output == expected
 
@@ -487,8 +490,9 @@ def test_virtualfile_from_vectors_transpose():
                     lib.call_module("info", "{} -C ->{}".format(vfile, outfile.name))
                     output = outfile.read(keep_tabs=True)
             bounds = "\t".join(
-                ["{:.0f}\t{:.0f}".format(col.min(), col.max()) for col in data.T]
+                "{:.0f}\t{:.0f}".format(col.min(), col.max()) for col in data.T
             )
+
             expected = "{}\n".format(bounds)
             assert output == expected
 
@@ -519,8 +523,10 @@ def test_virtualfile_from_matrix():
                     lib.call_module("info", "{} ->{}".format(vfile, outfile.name))
                     output = outfile.read(keep_tabs=True)
             bounds = "\t".join(
-                ["<{:.0f}/{:.0f}>".format(col.min(), col.max()) for col in data.T]
+                "<{:.0f}/{:.0f}>".format(col.min(), col.max())
+                for col in data.T
             )
+
             expected = "<matrix memory>: N = {}\t{}\n".format(shape[0], bounds)
             assert output == expected
 
@@ -542,8 +548,10 @@ def test_virtualfile_from_matrix_slice():
                     lib.call_module("info", "{} ->{}".format(vfile, outfile.name))
                     output = outfile.read(keep_tabs=True)
             bounds = "\t".join(
-                ["<{:.0f}/{:.0f}>".format(col.min(), col.max()) for col in data.T]
+                "<{:.0f}/{:.0f}>".format(col.min(), col.max())
+                for col in data.T
             )
+
             expected = "<matrix memory>: N = {}\t{}\n".format(rows, bounds)
             assert output == expected
 
@@ -568,11 +576,10 @@ def test_virtualfile_from_vectors_pandas():
                     lib.call_module("info", "{} ->{}".format(vfile, outfile.name))
                     output = outfile.read(keep_tabs=True)
             bounds = "\t".join(
-                [
-                    "<{:.0f}/{:.0f}>".format(i.min(), i.max())
-                    for i in (data.x, data.y, data.z)
-                ]
+                "<{:.0f}/{:.0f}>".format(i.min(), i.max())
+                for i in (data.x, data.y, data.z)
             )
+
             expected = "<vector memory>: N = {}\t{}\n".format(size, bounds)
             assert output == expected
 
@@ -590,9 +597,7 @@ def test_virtualfile_from_vectors_arraylike():
             with GMTTempFile() as outfile:
                 lib.call_module("info", "{} ->{}".format(vfile, outfile.name))
                 output = outfile.read(keep_tabs=True)
-        bounds = "\t".join(
-            ["<{:.0f}/{:.0f}>".format(min(i), max(i)) for i in (x, y, z)]
-        )
+        bounds = "\t".join("<{:.0f}/{:.0f}>".format(min(i), max(i)) for i in (x, y, z))
         expected = "<vector memory>: N = {}\t{}\n".format(size, bounds)
         assert output == expected
 
@@ -795,14 +800,11 @@ def test_fails_for_wrong_version():
     """
 
     # Mock GMT_Get_Default to return an old version
-    def mock_defaults(api, name, value):  # pylint: disable=unused-argument
+    def mock_defaults(api, name, value):    # pylint: disable=unused-argument
         """
         Return an old version.
         """
-        if name == b"API_VERSION":
-            value.value = b"5.4.3"
-        else:
-            value.value = b"bla"
+        value.value = b"5.4.3" if name == b"API_VERSION" else b"bla"
         return 0
 
     lib = clib.Session()

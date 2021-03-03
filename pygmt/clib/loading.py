@@ -139,8 +139,7 @@ def clib_full_names(env=None):
                 yield libfullpath
 
     # 4. Search for library names in the system default path
-    for libname in libnames:
-        yield libname
+    yield from libnames
 
 
 def check_libgmt(libgmt):

@@ -105,10 +105,9 @@ def show_versions():
 
         for gs_cmd in cmds:
             try:
-                version = subprocess.check_output(
+                return subprocess.check_output(
                     [gs_cmd, "--version"], universal_newlines=True
                 ).strip()
-                return version
             except FileNotFoundError:
                 continue
         return None
@@ -118,10 +117,9 @@ def show_versions():
         Get GMT version.
         """
         try:
-            version = subprocess.check_output(
+            return subprocess.check_output(
                 ["gmt", "--version"], universal_newlines=True
             ).strip()
-            return version
         except FileNotFoundError:
             return None
 

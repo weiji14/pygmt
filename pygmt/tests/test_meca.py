@@ -189,7 +189,7 @@ def test_meca_spec_file():
     # writes temp file to pass to gmt
     with GMTTempFile() as temp:
         with open(temp.name, mode="w") as temp_file:
-            temp_file.write(" ".join([str(x) for x in focal_mechanism]))
+            temp_file.write(" ".join(str(x) for x in focal_mechanism))
         # supply focal mechanisms to meca as a file
         fig.meca(
             temp.name,
