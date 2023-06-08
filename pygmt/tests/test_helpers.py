@@ -53,7 +53,7 @@ def test_unique_name():
     """
     Make sure the names are really unique.
     """
-    names = [unique_name() for i in range(100)]
+    names = [unique_name() for _ in range(100)]
     assert len(names) == len(set(names))
 
 

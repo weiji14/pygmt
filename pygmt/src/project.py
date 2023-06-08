@@ -246,8 +246,7 @@ def project(data=None, x=None, y=None, z=None, outfile=None, **kwargs):
                 result = pd.read_csv(tmpfile.name, sep="\t", names=column_names)
             else:
                 result = pd.read_csv(tmpfile.name, sep="\t", header=None, comment=">")
-        # return None if outfile set, output in outfile
-        elif outfile != tmpfile.name:
+        else:
             result = None
 
     return result

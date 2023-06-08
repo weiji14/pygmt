@@ -30,7 +30,7 @@ def test_pygmtscraper():
         with TemporaryDirectory(dir=os.getcwd()) as tmpdir:
             conf = {"src_dir": "meh"}
             fname = os.path.join(tmpdir, "meh.png")
-            block_vars = {"image_path_iterator": (i for i in [fname])}
+            block_vars = {"image_path_iterator": iter([fname])}
             assert not os.path.exists(fname)
             scraper(None, block_vars, conf)
             assert os.path.exists(fname)

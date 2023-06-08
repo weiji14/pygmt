@@ -92,26 +92,25 @@ def data_kind(data, x=None, y=None, z=None, required_z=False, optional_data=Fals
 
     # determine the data kind
     if isinstance(data, (str, pathlib.PurePath)):
-        kind = "file"
+        return "file"
     elif optional_data and (data is None or isinstance(data, (bool, int, float))):
         # a nullcontext will be created for "null" kind
-        kind = "null"
+        return "null"
     elif isinstance(data, xr.DataArray):
-        kind = "grid"
+        return "grid"
     elif hasattr(data, "__geo_interface__"):
         # geo-like Python object that implements ``__geo_interface__``
         # (geopandas.GeoDataFrame or shapely.geometry)
-        kind = "geojson"
+        return "geojson"
     elif data is not None:
         if required_z and (
             getattr(data, "shape", (3, 3))[1] < 3  # np.array, pd.DataFrame
             or len(getattr(data, "data_vars", (0, 1, 2))) < 3  # xr.Dataset
         ):
             raise GMTInvalidInput("data must provide x, y, and z columns.")
-        kind = "matrix"
+        return "matrix"
     else:
-        kind = "vectors"
-    return kind
+        return "vectors"
 
 
 def build_arg_string(kwdict, confdict=None, infile=None, outfile=None):
@@ -235,7 +234,7 @@ def build_arg_string(kwdict, confdict=None, infile=None, outfile=None):
     if infile:
         gmt_args = [str(infile)] + gmt_args
     if outfile:
-        gmt_args.append("->" + str(outfile))
+        gmt_args.append(f"->{str(outfile)}")
     return " ".join(gmt_args)
 
 

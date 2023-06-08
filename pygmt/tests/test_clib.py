@@ -73,9 +73,7 @@ def mock(session, func, returns=None, mock_func=None):
         """
         Return our mock function.
         """
-        if name == func:
-            return mock_func
-        return get_libgmt_func(name, argtypes, restype)
+        return mock_func if name == func else get_libgmt_func(name, argtypes, restype)
 
     setattr(session, "get_libgmt_func", mock_get_libgmt_func)
 
@@ -473,7 +471,7 @@ def test_virtualfile_from_data_fail_non_valid_data(data):
     # is not given in the x, y case:
     for variable in product([None, data[:, 0]], repeat=2):
         # Filter one valid configuration:
-        if not any(item is None for item in variable):
+        if all(item is not None for item in variable):
             continue
         with clib.Session() as lib:
             with pytest.raises(GMTInvalidInput):
@@ -486,7 +484,7 @@ def test_virtualfile_from_data_fail_non_valid_data(data):
     # is not given in the x, y, z case:
     for variable in product([None, data[:, 0]], repeat=3):
         # Filter one valid configuration:
-        if not any(item is None for item in variable):
+        if all(item is not None for item in variable):
             continue
         with clib.Session() as lib:
             with pytest.raises(GMTInvalidInput):
@@ -617,11 +615,10 @@ def test_virtualfile_from_matrix_slice(dtypes):
     Test transforming a slice of a larger array to virtual file dataset.
     """
     shape = (10, 6)
+    rows = 5
     for dtype in dtypes:
         full_data = np.arange(shape[0] * shape[1], dtype=dtype).reshape(shape)
-        rows = 5
-        cols = 3
-        data = full_data[:rows, :cols]
+        data = full_data[:rows, :3]
         with clib.Session() as lib:
             with lib.virtualfile_from_matrix(data) as vfile:
                 with GMTTempFile() as outfile:
@@ -870,14 +867,11 @@ def test_info_dict():
         assert lib.info
 
     # Mock GMT_Get_Default to return always the same string
-    def mock_defaults(api, name, value):  # pylint: disable=unused-argument
+    def mock_defaults(api, name, value):    # pylint: disable=unused-argument
         """
         Put 'bla' in the value buffer.
         """
-        if name == b"API_VERSION":
-            value.value = b"1.2.3"
-        else:
-            value.value = b"bla"
+        value.value = b"1.2.3" if name == b"API_VERSION" else b"bla"
         return 0
 
     ses = clib.Session()
@@ -899,14 +893,11 @@ def test_fails_for_wrong_version():
     """
 
     # Mock GMT_Get_Default to return an old version
-    def mock_defaults(api, name, value):  # pylint: disable=unused-argument
+    def mock_defaults(api, name, value):    # pylint: disable=unused-argument
         """
         Return an old version.
         """
-        if name == b"API_VERSION":
-            value.value = b"5.4.3"
-        else:
-            value.value = b"bla"
+        value.value = b"5.4.3" if name == b"API_VERSION" else b"bla"
         return 0
 
     lib = clib.Session()

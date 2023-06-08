@@ -177,7 +177,7 @@ def select(data=None, outfile=None, **kwargs):
                 result = pd.read_csv(tmpfile.name, sep="\t", names=column_names)
             except AttributeError:  # 'str' object has no attribute 'columns'
                 result = pd.read_csv(tmpfile.name, sep="\t", header=None, comment=">")
-        elif outfile != tmpfile.name:  # return None if outfile set, output in outfile
+        else:
             result = None
 
     return result

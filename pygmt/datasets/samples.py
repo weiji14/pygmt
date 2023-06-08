@@ -150,10 +150,12 @@ def _load_mars_shape():
         "radius_m".
     """
     fname = which("@mars370d.txt", download="c")
-    data = pd.read_csv(
-        fname, sep="\t", header=None, names=["longitude", "latitude", "radius_m"]
+    return pd.read_csv(
+        fname,
+        sep="\t",
+        header=None,
+        names=["longitude", "latitude", "radius_m"],
     )
-    return data
 
 
 def _load_rock_sample_compositions():

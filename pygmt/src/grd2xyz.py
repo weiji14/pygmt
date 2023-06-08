@@ -188,7 +188,7 @@ def grd2xyz(grid, output_type="pandas", outfile=None, **kwargs):
             result = pd.read_csv(
                 tmpfile.name, sep="\t", names=dataframe_header, comment=">"
             )
-        elif outfile != tmpfile.name:  # return None if outfile set, output in outfile
+        else:
             result = None
 
         if output_type == "numpy":

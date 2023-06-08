@@ -146,7 +146,7 @@ def dimfilter(grid, **kwargs):
     ...     region=[-55, -51, -24, -19],
     ... )
     """
-    if not all(arg in kwargs for arg in ["D", "F", "N"]) and "Q" not in kwargs:
+    if any(arg not in kwargs for arg in ["D", "F", "N"]) and "Q" not in kwargs:
         raise GMTInvalidInput(
             """At least one of the following parameters must be specified:
             distance, filters, or sectors."""

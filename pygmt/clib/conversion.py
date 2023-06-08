@@ -93,7 +93,7 @@ def dataarray_to_matrix(grid):
     # East-West, North-South.
     for dim in grid.dims[::-1]:
         coord = grid.coords[dim].values
-        coord_incs = coord[1:] - coord[0:-1]
+        coord_incs = coord[1:] - coord[:-1]
         coord_inc = coord_incs[0]
         if not np.allclose(coord_incs, coord_inc):
             # calculate the increment if irregular spacing is found
@@ -166,8 +166,7 @@ def vectors_to_arrays(vectors):
     >>> all(isinstance(i, np.ndarray) for i in vectors_to_arrays(data))
     True
     """
-    arrays = [as_c_contiguous(np.asarray(i)) for i in vectors]
-    return arrays
+    return [as_c_contiguous(np.asarray(i)) for i in vectors]
 
 
 def as_c_contiguous(array):
@@ -207,9 +206,7 @@ def as_c_contiguous(array):
     >>> as_c_contiguous(x).flags.c_contiguous
     True
     """
-    if not array.flags.c_contiguous:
-        return array.copy(order="C")
-    return array
+    return array.copy(order="C") if not array.flags.c_contiguous else array
 
 
 def kwargs_to_ctypes_array(argument, kwargs, dtype):
@@ -244,9 +241,7 @@ def kwargs_to_ctypes_array(argument, kwargs, dtype):
     >>> print(should_be_none)
     None
     """
-    if argument in kwargs:
-        return dtype(*kwargs[argument])
-    return None
+    return dtype(*kwargs[argument]) if argument in kwargs else None
 
 
 def array_to_datetime(array):

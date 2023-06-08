@@ -453,8 +453,7 @@ class Figure:
 
         For the Jupyter notebook or IPython Qt console.
         """
-        png = self._preview(fmt="png", dpi=70, anti_alias=True, as_bytes=True)
-        return png
+        return self._preview(fmt="png", dpi=70, anti_alias=True, as_bytes=True)
 
     def _repr_html_(self):
         """

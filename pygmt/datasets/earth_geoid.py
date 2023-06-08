@@ -78,11 +78,10 @@ def load_earth_geoid(resolution="01d", region=None, registration=None):
     ...     registration="gridline",
     ... )
     """
-    grid = _load_remote_dataset(
+    return _load_remote_dataset(
         dataset_name="earth_geoid",
         dataset_prefix="earth_geoid_",
         resolution=resolution,
         region=region,
         registration=registration,
     )
-    return grid

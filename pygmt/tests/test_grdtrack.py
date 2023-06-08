@@ -30,7 +30,7 @@ def fixture_expected_array():
     """
     Load a numpy array with x, y, and bathymetry data.
     """
-    array = [
+    return [
         [-51.613, -17.93, 796.59434514],
         [-48.917, -22.434, 566.49184359],
         [-50.444, -16.358, 571.1492788],
@@ -42,7 +42,6 @@ def fixture_expected_array():
         [-48.001, -14.144, 741.35824074],
         [-54.438, -19.193, 490.02716679],
     ]
-    return array
 
 
 @pytest.fixture(scope="module", name="dataframe")

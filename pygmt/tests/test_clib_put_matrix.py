@@ -110,9 +110,7 @@ def test_put_matrix_grid(dtypes):
                 with xr.open_dataarray(tmp_grid.name) as dataarray:
                     assert dataarray.shape == shape
                     npt.assert_allclose(dataarray.data, np.flipud(data))
-                    npt.assert_allclose(
-                        dataarray.coords["x"].actual_range, np.array(wesn[0:2])
-                    )
+                    npt.assert_allclose(dataarray.coords["x"].actual_range, np.array(wesn[:2]))
                     npt.assert_allclose(
                         dataarray.coords["y"].actual_range, np.array(wesn[2:4])
                     )

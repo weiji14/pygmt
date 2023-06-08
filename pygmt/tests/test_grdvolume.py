@@ -34,7 +34,7 @@ def fixture_data():
     """
     Load the expected grdvolume data result as a numpy array.
     """
-    data = np.array(
+    return np.array(
         [
             [2.00000000e02, 2.30079975e10, 3.92142453e12, 1.70437454e02],
             [2.50000000e02, 2.30079975e10, 2.77102465e12, 1.20437454e02],
@@ -43,7 +43,6 @@ def fixture_data():
             [4.00000000e02, 2.81602292e09, 2.34764859e10, 8.33675242e00],
         ]
     )
-    return data
 
 
 def test_grdvolume_format(grid, region):

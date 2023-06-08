@@ -106,10 +106,7 @@ def clib_full_names(env=None):
 
     libnames = clib_names(os_name=sys.platform)  # e.g. libgmt.so, libgmt.dylib, gmt.dll
 
-    # Search for the library in different ways, sorted by priority.
-    # 1. Search for the library in GMT_LIBRARY_PATH if defined.
-    libpath = env.get("GMT_LIBRARY_PATH", "")  # e.g. $HOME/miniconda/envs/pygmt/lib
-    if libpath:
+    if libpath := env.get("GMT_LIBRARY_PATH", ""):
         for libname in libnames:
             libfullpath = Path(libpath) / libname
             if libfullpath.exists():
@@ -132,13 +129,11 @@ def clib_full_names(env=None):
     # 3. Search for DLLs in PATH by calling find_library() (Windows only)
     if sys.platform == "win32":
         for libname in libnames:
-            libfullpath = find_library(libname)
-            if libfullpath:
+            if libfullpath := find_library(libname):
                 yield libfullpath
 
     # 4. Search for library names in the system default path
-    for libname in libnames:
-        yield libname
+    yield from libnames
 
 
 def check_libgmt(libgmt):
@@ -162,7 +157,7 @@ def check_libgmt(libgmt):
     # Check if a few of the functions we need are in the library
     functions = ["Create_Session", "Get_Enum", "Call_Module", "Destroy_Session"]
     for func in functions:
-        if not hasattr(libgmt, "GMT_" + func):
+        if not hasattr(libgmt, f"GMT_{func}"):
             # pylint: disable=protected-access
             msg = (
                 f"Error loading '{libgmt._name}'. Couldn't access function GMT_{func}. "

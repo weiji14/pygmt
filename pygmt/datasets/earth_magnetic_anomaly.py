@@ -128,11 +128,10 @@ def load_earth_magnetic_anomaly(
         dataset_name = "earth_wdmam"
     else:
         dataset_name = "earth_magnetic_anomaly"
-    grid = _load_remote_dataset(
+    return _load_remote_dataset(
         dataset_name=dataset_name,
         dataset_prefix=dataset_prefix,
         resolution=resolution,
         region=region,
         registration=registration,
     )
-    return grid

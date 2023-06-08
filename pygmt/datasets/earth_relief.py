@@ -149,11 +149,10 @@ def load_earth_relief(
     else:
         dataset_prefix = earth_relief_sources[data_source]
 
-    grid = _load_remote_dataset(
+    return _load_remote_dataset(
         dataset_name="earth_relief",
         dataset_prefix=dataset_prefix,
         resolution=resolution,
         region=region,
         registration=registration,
     )
-    return grid

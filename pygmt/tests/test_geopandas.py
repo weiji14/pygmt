@@ -30,13 +30,10 @@ def fixture_gdf():
             ],
         }
     )
-    # Multipolygon first so the OGR_GMT file has @GMULTIPOLYGON in the header
-    gdf = gpd.GeoDataFrame(
+    return gpd.GeoDataFrame(
         index=["multipolygon", "polygon", "linestring"],
         geometry=[multipolygon, polygon, linestring],
     )
-
-    return gdf
 
 
 def test_geopandas_info_geodataframe(gdf):

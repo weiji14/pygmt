@@ -133,7 +133,7 @@ class triangulate:  # pylint: disable=invalid-name
             with table_context as infile:
                 # table output if outgrid is unset, else output to outgrid
                 if (outgrid := kwargs.get("G")) is None:
-                    kwargs.update({">": outfile})
+                    kwargs[">"] = outfile
                 lib.call_module(
                     module="triangulate", args=build_arg_string(kwargs, infile=infile)
                 )
@@ -144,9 +144,7 @@ class triangulate:  # pylint: disable=invalid-name
             return load_dataarray(outgrid)
 
         result = pd.read_csv(outfile, sep="\t", header=None)
-        if output_type == "numpy":
-            return result.to_numpy()
-        return result
+        return result.to_numpy() if output_type == "numpy" else result
 
     @staticmethod
     @fmt_docstring

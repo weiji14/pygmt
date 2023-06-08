@@ -115,10 +115,10 @@ def wiggle(
 
     if fillpositive or fillnegative:
         kwargs["G"] = []
-        if fillpositive:
-            kwargs["G"].append(fillpositive + "+p")
-        if fillnegative:
-            kwargs["G"].append(fillnegative + "+n")
+    if fillpositive:
+        kwargs["G"].append(f"{fillpositive}+p")
+    if fillnegative:
+        kwargs["G"].append(f"{fillnegative}+n")
 
     with Session() as lib:
         # Choose how data will be passed in to the module

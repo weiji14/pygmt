@@ -91,8 +91,7 @@ def print_clib_info(file=sys.stdout):
 
     lines = ["GMT library information:"]
     with Session() as ses:
-        for key in sorted(ses.info):
-            lines.append(f"  {key}: {ses.info[key]}")
+        lines.extend(f"  {key}: {ses.info[key]}" for key in sorted(ses.info))
     print("\n".join(lines), file=file)
 
 
@@ -224,13 +223,11 @@ def test(doctest=True, verbose=True, coverage=False, figures=True):
     if verbose:
         args.append("-vv")
     if coverage:
-        args.append(f"--cov={package}")
-        args.append("--cov-report=term-missing")
+        args.extend((f"--cov={package}", "--cov-report=term-missing"))
     if doctest:
         args.append("--doctest-modules")
     if figures:
         args.append("--mpl")
-    args.append("--pyargs")
-    args.append(package)
+    args.extend(("--pyargs", package))
     status = pytest.main(args)
     assert status == 0, "Some tests have failed."

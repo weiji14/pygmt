@@ -404,10 +404,11 @@ class Session:
 
         Only includes messages with the string ``"[ERROR]"`` in them.
         """
-        msg = ""
-        if hasattr(self, "_error_log"):
-            msg = "\n".join(line for line in self._error_log if "[ERROR]" in line)
-        return msg
+        return (
+            "\n".join(line for line in self._error_log if "[ERROR]" in line)
+            if hasattr(self, "_error_log")
+            else ""
+        )
 
     def destroy(self):
         """
@@ -435,8 +436,7 @@ class Session:
             "GMT_Destroy_Session", argtypes=[ctp.c_void_p], restype=ctp.c_int
         )
 
-        status = c_destroy_session(self.session_pointer)
-        if status:
+        if status := c_destroy_session(self.session_pointer):
             raise GMTCLibError(
                 f"Failed to destroy GMT API session:\n{self._error_message}"
             )
@@ -579,11 +579,7 @@ class Session:
         # 'value' array. 'status' is number of valid values in the array.
         if option in "IRt":
             return value[:status]
-        if option in "XY":  # only one valid element in the array
-            return value[0]
-        # option is set and the option value (in integer type) is returned via
-        # the function return value (i.e., 'status')
-        return status
+        return value[0] if option in "XY" else status
 
     def call_module(self, module, args):
         """
@@ -727,10 +723,7 @@ class Session:
         """
         pad = kwargs.get("pad", None)
         if pad is None:
-            if "MATRIX" in family:
-                pad = 0
-            else:
-                pad = self["GMT_PAD_DEFAULT"]
+            pad = 0 if "MATRIX" in family else self["GMT_PAD_DEFAULT"]
         return pad
 
     def _parse_constant(self, constant, valid, valid_modifiers=None):
@@ -768,8 +761,7 @@ class Session:
             )
         if nmodifiers > 0 and valid_modifiers is None:
             raise GMTInvalidInput(
-                "Constant modifiers not allowed since valid values were not "
-                + f"given: '{constant}'"
+                f"Constant modifiers not allowed since valid values were not given: '{constant}'"
             )
         if name not in valid:
             raise GMTInvalidInput(
@@ -783,8 +775,7 @@ class Session:
             raise GMTInvalidInput(
                 f"Invalid constant modifier '{parts[1]}'. Must be one of {str(valid_modifiers)}."
             )
-        integer_value = sum(self[part] for part in parts)
-        return integer_value
+        return sum(self[part] for part in parts)
 
     def _check_dtype_and_dim(self, array, ndim):
         """
@@ -1253,17 +1244,16 @@ class Session:
         # vectors_to_arrays.
         arrays = vectors_to_arrays(vectors)
 
-        columns = len(arrays)
-        # Find arrays that are of string dtype from column 3 onwards
-        # Assumes that first 2 columns contains coordinates like longitude
-        # latitude, or datetime string types.
-        for col, array in enumerate(arrays[2:]):
-            if pd.api.types.is_string_dtype(array.dtype):
-                columns = col + 2
-                break
-
+        columns = next(
+            (
+                col + 2
+                for col, array in enumerate(arrays[2:])
+                if pd.api.types.is_string_dtype(array.dtype)
+            ),
+            len(arrays),
+        )
         rows = len(arrays[0])
-        if not all(len(i) == rows for i in arrays):
+        if any(len(i) != rows for i in arrays):
             raise GMTInvalidInput("All arrays must have same size.")
 
         family = "GMT_IS_DATASET|GMT_VIA_VECTOR"
@@ -1277,10 +1267,7 @@ class Session:
         for col, array in enumerate(arrays[:columns]):
             self.put_vector(dataset, column=col, vector=array)
 
-        # Use put_strings for last column(s) with string type data
-        # Have to use modifier "GMT_IS_DUPLICATE" to duplicate the strings
-        string_arrays = arrays[columns:]
-        if string_arrays:
+        if string_arrays := arrays[columns:]:
             if len(string_arrays) == 1:
                 strings = string_arrays[0]
             elif len(string_arrays) > 1:
@@ -1590,10 +1577,7 @@ class Session:
                     # types
                     _data = np.atleast_2d(np.asanyarray(data).T)
 
-        # Finally create the virtualfile from the data, to be passed into GMT
-        file_context = _virtualfile_from(*_data)
-
-        return file_context
+        return _virtualfile_from(*_data)
 
     def extract_region(self):
         """

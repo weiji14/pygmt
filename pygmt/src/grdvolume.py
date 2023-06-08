@@ -122,7 +122,7 @@ def grdvolume(grid, output_type="pandas", outfile=None, **kwargs):
         # Read temporary csv output to a pandas table
         if outfile == tmpfile.name:  # if user did not set outfile, return pd.DataFrame
             result = pd.read_csv(tmpfile.name, sep="\t", header=None, comment=">")
-        elif outfile != tmpfile.name:  # return None if outfile set, output in outfile
+        else:
             result = None
 
         if output_type == "numpy":

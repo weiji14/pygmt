@@ -78,11 +78,10 @@ def load_earth_age(resolution="01d", region=None, registration=None):
     ...     registration="gridline",
     ... )
     """
-    grid = _load_remote_dataset(
+    return _load_remote_dataset(
         dataset_name="earth_age",
         dataset_prefix="earth_age_",
         resolution=resolution,
         region=region,
         registration=registration,
     )
-    return grid

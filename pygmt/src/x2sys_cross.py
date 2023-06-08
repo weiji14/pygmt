@@ -238,7 +238,7 @@ def x2sys_cross(tracks=None, outfile=None, **kwargs):
                 )
                 # Remove the "# " from "# x" in the first column
                 table = table.rename(columns={table.columns[0]: table.columns[0][2:]})
-            elif outfile != tmpfile.name:  # if outfile is set, output in outfile only
+            else:
                 table = None
 
     return table

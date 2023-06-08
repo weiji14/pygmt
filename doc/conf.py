@@ -2,6 +2,7 @@
 """
 Sphinx documentation configuration file.
 """
+
 # pylint: disable=invalid-name
 
 import datetime
@@ -153,7 +154,7 @@ release = __version__
 
 requires_python = metadata("pygmt")["Requires-Python"]
 with pygmt.clib.Session() as lib:
-    requires_gmt = ">=" + lib.required_version
+    requires_gmt = f">={lib.required_version}"
 
 # These enable substitutions using |variable| in the rst files
 rst_epilog = f"""
