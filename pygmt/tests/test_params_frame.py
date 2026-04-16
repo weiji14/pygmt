@@ -33,8 +33,11 @@ def test_params_frame_only():
     assert str(Frame("WSen")) == "WSen"
     assert str(Frame(axes="WSEN", title="My Title")) == "WSEN+tMy Title"
 
-    frame = str(Frame(axes="WSEN", title="My Title", fill="red"))
-    assert frame == "WSEN+gred+tMy Title"
+    frame = Frame(axes="WSEN", title="My Title", fill="red")
+    assert str(frame) == "WSEN+gred+tMy Title"
+
+    frame = Frame(axes="WSEN", title="My Title", subtitle="My Subtitle", fill="red")
+    assert str(frame) == "WSEN+gred+tMy Title+sMy Subtitle"
 
 
 def test_params_frame_axis():
@@ -47,9 +50,10 @@ def test_params_frame_axis():
     frame = Frame(
         axes="WSEN",
         title="My Title",
+        subtitle="My Subtitle",
         axis=Axis(annot=True, tick=True, grid=True, label="LABEL"),
     )
-    assert list(frame) == ["WSEN+tMy Title", "afg+lLABEL"]
+    assert list(frame) == ["WSEN+tMy Title+sMy Subtitle", "afg+lLABEL"]
 
     frame = Frame(
         axes="WSEN",
@@ -120,6 +124,9 @@ def test_params_frame_invalid_axis_combinations():
     """
     Test that invalid combinations of uniform and individual axis settings fail.
     """
+    with pytest.raises(GMTParameterError, match="requires 'title'"):
+        Frame(subtitle="My Subtitle")
+
     with pytest.raises(GMTParameterError, match="Either 'axis' or"):
         Frame(axis=Axis(annot=1), xaxis=Axis(annot=2))
 
